@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ayussh.plays</title>
+    <meta name="description" content="weird little games and experiments by ayussh">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #0a0a0a;
+            --card-bg: #141414;
+            --card-hover: #1a1a1a;
+            --accent: #e8ff47;
+            --text: #f0f0f0;
+            --muted: #666;
+            --border: #222;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            cursor: crosshair;
+        }
+
+        /* Floating particles */
+        .particle {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            z-index: 0;
+        }
+
+        /* Header */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            padding: 40px 20px;
+        }
+
+        .hero-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 12px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 20px;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 10vw, 8rem);
+            font-weight: 700;
+            letter-spacing: -3px;
+            line-height: 0.9;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .hero-title .dot {
+            color: var(--accent);
+        }
+
+        .hero-subtitle {
+            font-family: 'Space Mono', monospace;
+            font-size: clamp(14px, 2vw, 18px);
+            color: var(--muted);
+            text-align: center;
+            max-width: 500px;
+            line-height: 1.6;
+            margin-bottom: 50px;
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            animation: float 2s ease-in-out infinite;
+        }
+
+        .scroll-hint span {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .scroll-arrow {
+            width: 20px;
+            height: 20px;
+            border-right: 2px solid var(--accent);
+            border-bottom: 2px solid var(--accent);
+            transform: rotate(45deg);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(10px); }
+        }
+
+        /* Counter */
+        .counter-bar {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            padding: 30px 20px;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            font-family: 'Space Mono', monospace;
+        }
+
+        .counter-item {
+            text-align: center;
+        }
+
+        .counter-num {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .counter-label {
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        /* Projects grid */
+        .projects {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 80px 20px;
+        }
+
+        .section-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .project-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .project-card {
+            display: grid;
+            grid-template-columns: 60px 1fr auto;
+            align-items: center;
+            gap: 30px;
+            padding: 30px 35px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            text-decoration: none;
+            color: var(--text);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 0;
+            height: 100%;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        .project-card:hover {
+            background: var(--card-hover);
+            transform: translateX(8px);
+        }
+
+        .project-card:hover::before {
+            width: 4px;
+        }
+
+        .project-card:hover .project-arrow {
+            transform: translateX(5px);
+            color: var(--accent);
+        }
+
+        .project-card:hover .project-icon {
+            transform: scale(1.15) rotate(-5deg);
+        }
+
+        .project-icon {
+            font-size: 2.2rem;
+            transition: transform 0.3s ease;
+            text-align: center;
+        }
+
+        .project-info {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .project-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .project-desc {
+            font-family: 'Space Mono', monospace;
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.4;
+        }
+
+        .project-tags {
+            display: flex;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .tag {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            border: 1px solid var(--border);
+            color: var(--muted);
+        }
+
+        .tag.live {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .project-arrow {
+            font-size: 1.5rem;
+            color: var(--muted);
+            transition: all 0.3s ease;
+            font-weight: 300;
+        }
+
+        /* Coming soon */
+        .coming-soon {
+            text-align: center;
+            padding: 80px 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .coming-soon h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .coming-soon p {
+            font-family: 'Space Mono', monospace;
+            font-size: 13px;
+            color: var(--muted);
+            max-width: 400px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .blink {
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid var(--border);
+            font-family: 'Space Mono', monospace;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .project-card {
+                grid-template-columns: 40px 1fr auto;
+                gap: 15px;
+                padding: 20px;
+            }
+
+            .project-icon {
+                font-size: 1.6rem;
+            }
+
+            .project-name {
+                font-size: 1.1rem;
+            }
+
+            .counter-bar {
+                gap: 30px;
+            }
+
+            .counter-num {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hero">
+        <div class="hero-label">things i made for fun</div>
+        <h1 class="hero-title">ayussh<span class="dot">.</span>plays</h1>
+        <p class="hero-subtitle">
+            weird little games, experiments, and internet toys. 
+            some useful, some not. all made because i couldn't sleep.
+        </p>
+        <div class="scroll-hint">
+            <span>scroll</span>
+            <div class="scroll-arrow"></div>
+        </div>
+    </div>
+
+    <div class="counter-bar">
+        <div class="counter-item">
+            <div class="counter-num" id="project-count">0</div>
+            <div class="counter-label">projects</div>
+        </div>
+        <div class="counter-item">
+            <div class="counter-num" id="play-count">0</div>
+            <div class="counter-label">plays</div>
+        </div>
+        <div class="counter-item">
+            <div class="counter-num" id="vibe-count">0</div>
+            <div class="counter-label">vibes</div>
+        </div>
+    </div>
+
+    <div class="projects">
+        <div class="section-label">// select your game</div>
+
+        <div class="project-list">
+
+            <a href="https://crypto-wordle-mu.vercel.app" target="_blank" class="project-card">
+                <div class="project-icon">🔤</div>
+                <div class="project-info">
+                    <div class="project-name">CryptoWordle</div>
+                    <div class="project-desc">guess the crypto term in 6 tries. defi, degen, protocols — pick your poison.</div>
+                    <div class="project-tags">
+                        <span class="tag live">live</span>
+                        <span class="tag">word game</span>
+                        <span class="tag">farcaster</span>
+                    </div>
+                </div>
+                <div class="project-arrow">→</div>
+            </a>
+
+            <a href="https://base-times.vercel.app" target="_blank" class="project-card">
+                <div class="project-icon">📰</div>
+                <div class="project-info">
+                    <div class="project-name">The Base Times</div>
+                    <div class="project-desc">a full newspaper for the base ecosystem. real data, real tweets, builder ideas.</div>
+                    <div class="project-tags">
+                        <span class="tag live">live</span>
+                        <span class="tag">newspaper</span>
+                        <span class="tag">base l2</span>
+                    </div>
+                </div>
+                <div class="project-arrow">→</div>
+            </a>
+
+        </div>
+    </div>
+
+    <div class="coming-soon">
+        <h2>more cooking<span class="blink">_</span></h2>
+        <p>new experiments drop randomly. follow <a href="https://twitter.com/ayussheth" target="_blank">@ayussheth</a> for updates or just check back whenever.</p>
+    </div>
+
+    <footer>
+        <p>built by <a href="https://twitter.com/ayussheth" target="_blank">ayussh</a> · 2026 · no frameworks were harmed</p>
+    </footer>
+
+    <script>
+        // Animate counters on scroll
+        const counters = [
+            { el: document.getElementById('project-count'), target: 2 },
+            { el: document.getElementById('play-count'), target: 847 },
+            { el: document.getElementById('vibe-count'), target: 100 },
+        ];
+
+        let counted = false;
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !counted) {
+                    counted = true;
+                    counters.forEach(c => animateCount(c.el, c.target));
+                }
+            });
+        }, { threshold: 0.5 });
+
+        observer.observe(document.querySelector('.counter-bar'));
+
+        function animateCount(el, target) {
+            let current = 0;
+            const step = Math.max(1, Math.floor(target / 40));
+            const interval = setInterval(() => {
+                current += step;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(interval);
+                }
+                el.textContent = current;
+            }, 30);
+        }
+
+        // Cursor trail particles
+        document.addEventListener('mousemove', (e) => {
+            if (Math.random() > 0.85) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = e.clientX + 'px';
+                p.style.top = e.clientY + 'px';
+                document.body.appendChild(p);
+
+                p.animate([
+                    { opacity: 0.8, transform: `translate(${(Math.random()-0.5)*60}px, ${(Math.random()-0.5)*60}px) scale(1)` },
+                    { opacity: 0, transform: `translate(${(Math.random()-0.5)*120}px, ${(Math.random()-0.5)*120}px) scale(0)` }
+                ], { duration: 800, easing: 'ease-out' });
+
+                setTimeout(() => p.remove(), 800);
+            }
+        });
+
+        // Keyboard easter egg
+        let keys = '';
+        document.addEventListener('keydown', (e) => {
+            keys += e.key;
+            if (keys.includes('gm')) {
+                document.querySelector('.hero-subtitle').textContent = 'gm. you found the easter egg. now go play something.';
+                document.querySelector('.hero-subtitle').style.color = '#e8ff47';
+                keys = '';
+            }
+            if (keys.length > 10) keys = keys.slice(-10);
+        });
+    </script>
+</body>
+</html>
